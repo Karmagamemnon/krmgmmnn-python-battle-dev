@@ -11,6 +11,8 @@ def saveSample(sample):
     print(count)
     if count == 0:
         print("Sample doesn't exist yet")
+        cursor.execute("INSERT INTO sample VALUES (%s, %s, %s)", (sample.id, sample.rawdata, sample.timestamp))
+        conn.commit()
     else:
         print("Sample exists")
 
