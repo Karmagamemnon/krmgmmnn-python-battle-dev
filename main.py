@@ -26,4 +26,5 @@ def jsonToSamples(jsonResponse):
 if __name__ == "__main__":
     response = requests.get("http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
     samples = jsonToSamples(response.json())
+    print(samples[0])
     db.saveSample(samples[0])
