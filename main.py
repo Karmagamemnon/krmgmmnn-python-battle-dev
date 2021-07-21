@@ -4,17 +4,11 @@
 #    - Gregory MOU KUI
 import requests
 import db
-from sample import Sample
+from models.sample import Sample
 
 
-def formatJson(jsonResponse):
-    json = {}
-    for indexSensor, sensor in enumerate(jsonResponse):
-        sensorData = {}
-        for indexData, data in enumerate(sensor):
-            sensorData[indexData] = data
-        json[indexSensor] = sensorData
-    return json
+
+
 
 def jsonToSamples(jsonResponse):
     samples = []
@@ -28,3 +22,4 @@ if __name__ == "__main__":
     samples = jsonToSamples(response.json())
     for sample in samples:
         db.saveSample(sample)
+        sample.decryptRawdata()

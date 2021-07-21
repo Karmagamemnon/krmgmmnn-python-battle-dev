@@ -15,7 +15,7 @@ C0 == terminal information
 0019 == TAG information data length
 00 == TAG type
 02 == Number of the TAG
-0B == length per tag
+0B == length per tag (count number of bytes)
 
 06182660 == id sensor (température, batterie, rssi)
 00 == status (battery voltage status + temperature alert status)
