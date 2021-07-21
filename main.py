@@ -1,5 +1,5 @@
 # Python Battle Dev
-# Groups compose of:
+# Group composed of :
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
 import requests
@@ -7,11 +7,11 @@ import json
 
 def formatJson(jsonResponse):
     json = {}
-    for indexCapteur, capteur in enumerate(jsonResponse):
-        capteurData = {}
-        for indexData, data in enumerate(capteur):
-            capteurData[indexData] = data
-        json[indexCapteur] = capteurData
+    for indexSensor, sensor in enumerate(jsonResponse):
+        sensorData = {}
+        for indexData, data in enumerate(sensor):
+            sensorData[indexData] = data
+        json[indexSensor] = sensorData
     return json
 
 if __name__ == "__main__":

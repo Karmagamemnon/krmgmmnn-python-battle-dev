@@ -1,0 +1,32 @@
+545A == TZ (start symbol)
+0041 == packet length
+2424 == $$ (protocol)
+0406 == hardware type
+02040000 == version firmware
+0641884907900004 == code du receiver (imei)
+15070B02151E == rct time
+0000 == reserved
+0008 == status data length
+AA == alarm type (interval data)
+C0 == terminal information
+0000 == reserved
+01A5 == battery voltage (mv)
+04C3 == power voltage (mv)
+0019 == TAG information data length
+00 == TAG type
+02 == Number of the TAG
+0B == length per tag
+
+06182660 == id sensor (température, batterie, rssi)
+00 == status (battery voltage status + temperature alert status)
+0E1E == battery voltage
+00EC == temperature
+FF == humidity
+41 == rssi
+
+62182233 == sensor (température, humidité, batterie, rssi)
+000E5600FB4F49
+
+003B == packet index
+5DFE == check code
+0D0A == stop symbol
