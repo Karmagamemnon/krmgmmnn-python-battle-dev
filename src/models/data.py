@@ -1,4 +1,6 @@
+from utils.db import count
 from utils.tools import getBitFromByte
+
 
 class Data:
 
@@ -65,7 +67,12 @@ class Data:
             self.rssi = int(bytes, 16)
             print(f"RSSI = -{str(self.rssi)}dBm")
 
-    def getInsertQuery(self):
+    def doesDataExist(self) -> bool:
+        query = f"SELECT COUNT(1) FROM data WHERE id = {self.id}"
+        exists = count(query) > 0
+        return exists
+
+    def getInsertQuery(self) -> str:
         return (
             "INSERT INTO data (id_sensor, battery_voltage_status, temperature, humidity, rssi) " +
             f"VALUES ({self.idSensor}, {self.batteryVoltageStatus}, {self.temperature}, {self.humidity}, {self.rssi});"

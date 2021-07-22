@@ -1,12 +1,13 @@
 from datetime import datetime
 from models.data import Data
+from utils.db import count
 
 
 class Sample:
 
-    startSymbol = "545A"
-    stopSymbol = "0D0A"
-    startTagIndex = 86
+    startSymbol: str = "545A"
+    stopSymbol: str = "0D0A"
+    startTagIndex: int = 86
 
     def __init__(self, sampleData):
         self.id = sampleData[0]
@@ -14,7 +15,7 @@ class Sample:
         self.timestamp = datetime.strptime(
             sampleData[2], '%a, %d %b %Y %H:%M:%S GMT')
 
-    def areRawdataValid(self):
+    def areRawdataValid(self) -> bool:
         lenght = len(self.rawdata)
         if (lenght < 98):
             print("There is a problem with rawdata")
@@ -43,6 +44,11 @@ class Sample:
                 dataset.append(data)
 
         return dataset
+
+    def doesSampleExist(self) -> bool:
+        query = f"SELECT COUNT(1) FROM sample WHERE id = {self.id}"
+        exists = count(query) > 0
+        return exists
 
     def getInsertQuery(self) -> str:
         return (
