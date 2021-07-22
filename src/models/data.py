@@ -29,32 +29,39 @@ class Data:
         rssiLength = 2
         rssiEnd = rssiStart + rssiLength
 
-        print(tagInformations)
-        print(len(tagInformations))
-        print(idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength)
+        if(len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
 
-        # Sensor ID
-        self.idSensor = tagInformations[idSensorStart:idSensorEnd]
-        print("Sensor ID = " + self.idSensor + "mV")
+            # Sensor ID
+            self.idSensor = tagInformations[idSensorStart:idSensorEnd]
+            print("Sensor ID = " + str(self.idSensor))
 
-        # Battery status
-        print("Battery status = " + tagInformations[statusStart:statusEnd] + "mV")
-        bytes = tagInformations[statusStart:statusEnd]
-        bit = getBitFromByte(bytes, 7)
-        self.batteryVoltageStatus = bit
-        print("Battery status = " + self.batteryVoltageStatus + "mV")
+            # Battery status
+            bytes = tagInformations[statusStart:statusEnd]
+            bit = getBitFromByte(bytes, 7)
+            self.batteryVoltageStatus = bit
+            print("Battery status = " + str(self.batteryVoltageStatus))
 
-        # Battery voltage
-        print("Battery voltage = " + tagInformations[batteryVoltageStart:batteryVoltageEnd] + "mV")
-        bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
-        self.batteryVoltage = int(bytes, 16)
-        print("Battery voltage = " + self.batteryVoltage + "mV")
+            # Battery voltage
+            bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
+            self.batteryVoltage = int(bytes, 16)
+            print("Battery voltage = " + str(self.batteryVoltage) + "mV")
 
-        # Temperature
-        print("Temperature =" + tagInformations[temperatureStart:temperatureEnd] + "mV")
+            # Temperature
+            bytes = tagInformations[temperatureStart:temperatureEnd]
+            isAbnormal = getBitFromByte(bytes, 15) == 1
+            isNegative = getBitFromByte(bytes, 14) == 1
+            temperature = int(bytes, 16) & 0b1111111111111
+            self.temperature = (-1 if isNegative else 1) * (temperature / 10)
+            print("Temperature = " + str(self.temperature) + "°C")
 
-        # Humidity
-        print("Humidity = " + tagInformations[humidityStart:humidityEnd] + "mV")
+            # Humidity
+            bytes = tagInformations[humidityStart:humidityEnd]
+            humidity = None if bytes == "FF" else int(bytes, 16)
+            self.humidity = humidity
+            if (self.humidity != None):
+                print("Humidity = " + str(self.humidity) + "%")
 
-        # RSSI
-        print("RSSI = " + tagInformations[rssiStart:rssiEnd] + "mV")
+            # RSSI
+            bytes = tagInformations[rssiStart:rssiEnd]
+            self.rssi = int(bytes, 16)
+            print("RSSI = -" + str(self.rssi) + "dBm")
