@@ -9,6 +9,7 @@ from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from models.sensor import Sensor
 from models.sample import Sample
+from views.index import index_page
 
 app = Flask(__name__)
 
@@ -23,11 +24,12 @@ def jsonToSamples(jsonResponse):
 
 @app.route("/")
 def index():
-    return 'Index page'
+    return index_page()
 
 @app.route("/data")
 def getData():
     query = "SELECT * FROM (SELECT * FROM `data` ORDER BY `timestamp` DESC) AS orderBy GROUP BY `id_sensor`"
+    print(executeSelectQuery(query))
     return str(executeSelectQuery(query))
 
 
