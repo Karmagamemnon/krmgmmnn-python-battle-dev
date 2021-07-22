@@ -26,11 +26,16 @@ def jsonToSamples(jsonResponse):
 def index():
     return index_page()
 
+
 @app.route("/data")
 def getData():
-    query = "SELECT * FROM (SELECT * FROM `data` ORDER BY `timestamp` DESC) AS orderBy GROUP BY `id_sensor`"
-    print(executeSelectQuery(query))
-    return str(executeSelectQuery(query))
+    query = "SELECT `data1`.`timestamp`, `data1`.`temperature`, `data1`.`humidity`, `data1`.`rssi`, `data1`.`battery_voltage_status`, `data1`.`id_sensor` FROM `data` as data1 JOIN (SELECT * FROM `data` as data2 GROUP BY `data2`.`timestamp` ORDER BY `data2`.`timestamp` DESC) as data3 ON `data3`.`id` = `data1`.`id` GROUP BY `data1`.`id_sensor`"
+    result = executeSelectQuery(query)
+    listData = []
+    for row in result:
+        data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
+        listData.append(data)
+    return jsonify(dataList=[data.serialize() for data in listData])
 
 
 def getLastSamples():
@@ -42,13 +47,13 @@ def getLastSamples():
     queries: list[str] = []
 
     for sample in samples:
-        if(not sample.doesSampleExist()):
+        if (not sample.doesSampleExist()):
             queries.append(sample.getInsertQuery())
 
             dataset = sample.getDataset()
             for data in dataset:
                 sensor = Sensor(data.idSensor)
-                if(not sensor.doesSensorExist()):
+                if (not sensor.doesSensorExist()):
                     queries.append(sensor.getInsertQuery())
                 else:
                     print(f"Sensor {sensor.id} already exists in database")
@@ -63,7 +68,7 @@ def getLastSamples():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=getLastSamples, trigger="interval", seconds=60)
+scheduler.add_job(func=getLastSamples, trigger="interval", seconds=300)
 scheduler.start()
 app.run(port=8081)
 
