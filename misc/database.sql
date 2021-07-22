@@ -31,7 +31,9 @@ CREATE TABLE `data` (
   `humidity` int unsigned DEFAULT NULL,
   `rssi` int unsigned DEFAULT NULL,
   `battery_voltage_status` tinyint NOT NULL,
+  `id_sensor` int DEFAULT NULL,
   PRIMARY KEY (`id`)
+    CONSTRAINT `fk_data_sensor` FOREIGN KEY (`id`) REFERENCES `sensor` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=DEFAULT;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

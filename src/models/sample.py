@@ -53,5 +53,5 @@ class Sample:
     def getInsertQuery(self) -> str:
         return (
             "INSERT INTO sample (id, rawdata, timestamp) " +
-            f"VALUES ({self.id}, '{self.rawdata}', '{self.timestamp}');"
+            f"VALUES ({self.id}, '{self.rawdata}', '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}');"
         )
