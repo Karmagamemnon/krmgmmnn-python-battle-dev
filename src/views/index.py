@@ -1,16 +1,12 @@
 from dominate.tags import *
 from dominate import document
 from models.data import Data
-from models.sample import Sample
 from utils.db import executeSelectQuery
 
 title = "Ultimate sensors UI premium deluxe day one master edition standard"
 
 
 def index_page():
-
-    query = "SELECT * FROM (SELECT * FROM `data` ORDER BY `timestamp` DESC) AS orderBy GROUP BY `id_sensor`"
-    dataset = executeSelectQuery(query)
 
     doc = base_page()
     doc.title = title
@@ -21,23 +17,17 @@ def index_page():
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
 
             with div(cls="d-flex flex-row", style="gap: 1rem;"):
-                for databerk in dataset:
-                    data = Data()
-                    data.idSensor = databerk[6]
-                    data.timestamp = databerk[5]
-                    data.batteryVoltageStatus = databerk[4]
-                    data.temperature = databerk[1]
-                    data.humidity = databerk[2]
-                    data.rssi = databerk[3]
+                dataset = Data.getLastDataForEachSensor()
+                for data in dataset:
 
-                    with div(cls="card", style="width: 33%;"):
+                    with div(cls="card"):
 
-                        img(cls="card-img-top p-5", style="width: 15rem;",
-                            src="https://mon-guide-campingcar.com/wp-content/uploads/2021/01/COMMENT-INSTALLER-UNE-PARABOLE-DE-CAMPING-CAR.png")
+                        img(cls="card-img-top", style="height: 240px; width: 320px;",
+                            src="https://www.revolution-energetique.com/wp-content/uploads/2021/05/satellite-5a3c2679b39d030037a12868-768x504.jpg")
 
                         with div(cls="card-body"):
 
-                            with h5(f"Sensor #{data.idSensor}", cls="card-title"):
+                            with h5(f"Sensor #{str(data.idSensor).zfill(8)}", cls="card-title"):
                                 if(data.batteryVoltageStatus == 1):
                                     span("Low battery", cls="badge alert-warning")
 
@@ -64,7 +54,7 @@ def index_page():
 
                             hr()
 
-                            a("Older data", href="#", cls="btn btn-secondary")
+                            a("Previous data", href="#", cls="btn btn-secondary")
 
     return doc.render()
 
@@ -81,5 +71,6 @@ def base_page():
         script(type='text/javascript', src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
         script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
         script(type='text/javascript', src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', crossorigin="anonymous")
+        script(type='text/javascript', src='https://kit.fontawesome.com/fa3537a8a2.js', crossorigin="anonymous")
 
     return doc

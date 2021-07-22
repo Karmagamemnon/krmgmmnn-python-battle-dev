@@ -1,6 +1,5 @@
 from datetime import datetime
-from decimal import Decimal
-from utils.db import count
+from utils.db import count, executeSelectQuery
 from utils.tools import getBitFromByte
 
 
@@ -34,8 +33,7 @@ class Data:
             rssiLength = 2
             rssiEnd = rssiStart + rssiLength
 
-            if (
-                    len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
+            if (len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
 
                 # Sensor ID
                 self.idSensor = tagInformations[idSensorStart:idSensorEnd]
@@ -61,7 +59,8 @@ class Data:
                 isAbnormal = getBitFromByte(bytes, 15) == 1
                 isNegative = getBitFromByte(bytes, 14) == 1
                 temperature = int(bytes, 16) & 0b1111111111111
-                self.temperature = (-1 if isNegative else 1) * (temperature / 10)
+                self.temperature = (-1 if isNegative else 1) * \
+                    (temperature / 10)
                 print(f"Temperature = {str(self.temperature)}°C")
 
                 # Humidity
@@ -75,14 +74,14 @@ class Data:
                 bytes = tagInformations[rssiStart:rssiEnd]
                 self.rssi = int(bytes, 16)
                 print(f"RSSI = -{str(self.rssi)}dBm")
-        elif (
-                timestamp != None and temperature != None and rssi != None and battery_voltage_status != None and id_sensor != None):
+
+        elif (timestamp != None and temperature != None and rssi != None and battery_voltage_status != None and id_sensor != None):
             self.temperature = temperature
             self.humidity = humidity
             self.rssi = rssi
-            self.battery_voltage_status = battery_voltage_status
+            self.batteryVoltageStatus = battery_voltage_status
             self.timestamp = timestamp
-            self.id_sensor = id_sensor
+            self.idSensor = id_sensor
 
     def doesDataExist(self) -> bool:
         query = f"SELECT COUNT(1) FROM data WHERE id = {self.id}"
@@ -92,9 +91,18 @@ class Data:
     def getInsertQuery(self) -> str:
         humidity = "NULL" if self.humidity == None else self.humidity
         return (
-                "INSERT INTO data (id_sensor, timestamp, battery_voltage_status, temperature, humidity, rssi) " +
-                f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
+            "INSERT INTO data (id_sensor, timestamp, battery_voltage_status, temperature, humidity, rssi) " +
+            f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
         )
+
+    def getLastDataForEachSensor():
+        query = "SELECT `data1`.`timestamp`, `data1`.`temperature`, `data1`.`humidity`, `data1`.`rssi`, `data1`.`battery_voltage_status`, `data1`.`id_sensor` FROM `data` as data1 JOIN (SELECT * FROM `data` as data2 GROUP BY `data2`.`timestamp` ORDER BY `data2`.`timestamp` DESC) as data3 ON `data3`.`id` = `data1`.`id` GROUP BY `data1`.`id_sensor`"
+        result = executeSelectQuery(query)
+        listData = []
+        for row in result:
+            data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
+            listData.append(data)
+        return listData
 
     def serialize(self):
         return {

@@ -27,17 +27,6 @@ def index():
     return index_page()
 
 
-@app.route("/data")
-def getData():
-    query = "SELECT `data1`.`timestamp`, `data1`.`temperature`, `data1`.`humidity`, `data1`.`rssi`, `data1`.`battery_voltage_status`, `data1`.`id_sensor` FROM `data` as data1 JOIN (SELECT * FROM `data` as data2 GROUP BY `data2`.`timestamp` ORDER BY `data2`.`timestamp` DESC) as data3 ON `data3`.`id` = `data1`.`id` GROUP BY `data1`.`id_sensor`"
-    result = executeSelectQuery(query)
-    listData = []
-    for row in result:
-        data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
-        listData.append(data)
-    return jsonify(dataList=[data.serialize() for data in listData])
-
-
 def getLastSamples():
     response = requests.get(
         "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
