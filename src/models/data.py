@@ -1,4 +1,4 @@
-# from tools import getBitFromByte
+from tools import getBitFromByte
 
 
 class Data:
@@ -35,23 +35,26 @@ class Data:
 
         # Sensor ID
         self.idSensor = tagInformations[idSensorStart:idSensorEnd]
-        print("Sensor ID = ", self.idSensor)
+        print("Sensor ID = " + self.idSensor + "mV")
 
         # Battery status
-        print("Battery status = ", tagInformations[statusStart:statusEnd])
-        # byte = tagInformations[statusStart:statusEnd]
-        # bit = getBitFromByte(byte, 7)
-        # self.batteryVoltageStatus = bit
-        # print("Battery status = ", self.batteryVoltageStatus)
+        print("Battery status = " + tagInformations[statusStart:statusEnd] + "mV")
+        bytes = tagInformations[statusStart:statusEnd]
+        bit = getBitFromByte(bytes, 7)
+        self.batteryVoltageStatus = bit
+        print("Battery status = " + self.batteryVoltageStatus + "mV")
 
         # Battery voltage
-        print("Battery voltage = ", tagInformations[batteryVoltageStart:batteryVoltageEnd])
+        print("Battery voltage = " + tagInformations[batteryVoltageStart:batteryVoltageEnd] + "mV")
+        bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
+        self.batteryVoltage = int(bytes, 16)
+        print("Battery voltage = " + self.batteryVoltage + "mV")
 
         # Temperature
-        print("Temperature = ", tagInformations[temperatureStart:temperatureEnd])
+        print("Temperature =" + tagInformations[temperatureStart:temperatureEnd] + "mV")
 
         # Humidity
-        print("Humidity = ", tagInformations[humidityStart:humidityEnd])
+        print("Humidity = " + tagInformations[humidityStart:humidityEnd] + "mV")
 
         # RSSI
-        print("RSSI = ", tagInformations[rssiStart:rssiEnd])
+        print("RSSI = " + tagInformations[rssiStart:rssiEnd] + "mV")

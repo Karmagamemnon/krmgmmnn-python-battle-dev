@@ -1,5 +1,5 @@
 import unittest
-from data import Data
+from models.data import Data
 
 class TestDataMethods(unittest.TestCase):
 
