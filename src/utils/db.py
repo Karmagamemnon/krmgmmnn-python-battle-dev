@@ -4,9 +4,13 @@ conn = None
 cursor = None
 
 
+def execute(query):
+    cursor.execute(query)
+    conn.commit()
+
 def saveSample(sample):
     # Check if sample doesn't exist
-    cursor.execute("SELECT COUNT(1) FROM sample WHERE id = " + str(sample.id))
+    cursor.execute(f"SELECT COUNT(1) FROM sample WHERE id = {str(sample.id)}")
     count = cursor.fetchone()[0]
     if count == 0:
         print("Sample doesn't exist yet")
@@ -21,6 +25,5 @@ def closeConnection():
     conn.close()
 
 
-conn = mysql.connector.connect(
-    host="localhost", user="python", password="python123", database="pythonbattledev_db")
+conn = mysql.connector.connect(host="localhost", user="python", password="python123", database="pythonbattledev_db")
 cursor = conn.cursor()

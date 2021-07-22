@@ -1,5 +1,4 @@
-from tools import getBitFromByte
-
+from utils.tools import getBitFromByte
 
 class Data:
 
@@ -33,18 +32,18 @@ class Data:
 
             # Sensor ID
             self.idSensor = tagInformations[idSensorStart:idSensorEnd]
-            print("Sensor ID = " + str(self.idSensor))
+            print(f"Sensor ID = {str(self.idSensor)}")
 
             # Battery status
             bytes = tagInformations[statusStart:statusEnd]
             bit = getBitFromByte(bytes, 7)
             self.batteryVoltageStatus = bit
-            print("Battery status = " + str(self.batteryVoltageStatus))
+            print(f"Battery status = {str(self.batteryVoltageStatus)}")
 
             # Battery voltage
             bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
             self.batteryVoltage = int(bytes, 16)
-            print("Battery voltage = " + str(self.batteryVoltage) + "mV")
+            print(f"Battery voltage = {str(self.batteryVoltage)}mV")
 
             # Temperature
             bytes = tagInformations[temperatureStart:temperatureEnd]
@@ -52,16 +51,22 @@ class Data:
             isNegative = getBitFromByte(bytes, 14) == 1
             temperature = int(bytes, 16) & 0b1111111111111
             self.temperature = (-1 if isNegative else 1) * (temperature / 10)
-            print("Temperature = " + str(self.temperature) + "°C")
+            print(f"Temperature = {str(self.temperature)}°C")
 
             # Humidity
             bytes = tagInformations[humidityStart:humidityEnd]
             humidity = None if bytes == "FF" else int(bytes, 16)
             self.humidity = humidity
             if (self.humidity != None):
-                print("Humidity = " + str(self.humidity) + "%")
+                print(f"Humidity = {str(self.humidity)}%")
 
             # RSSI
             bytes = tagInformations[rssiStart:rssiEnd]
             self.rssi = int(bytes, 16)
-            print("RSSI = -" + str(self.rssi) + "dBm")
+            print(f"RSSI = -{str(self.rssi)}dBm")
+
+    def getInsertQuery(self):
+        return (
+            "INSERT INTO data (id_sensor, battery_voltage_status, temperature, humidity, rssi) " +
+            f"VALUES ({self.idSensor}, {self.batteryVoltageStatus}, {self.temperature}, {self.humidity}, {self.rssi});"
+        )

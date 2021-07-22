@@ -1,5 +1,4 @@
 from datetime import datetime
-from models.sensor import Sensor
 from models.data import Data
 
 
@@ -28,7 +27,7 @@ class Sample:
             return False
         return True
 
-    def decryptRawdata(self):
+    def getDataset(self) -> list[Data]:
         dataset = []
 
         if(self.areRawdataValid() == True):
@@ -44,3 +43,9 @@ class Sample:
                 dataset.append(data)
 
         return dataset
+
+    def getInsertQuery(self) -> str:
+        return (
+            "INSERT INTO sample (id, rawdata, timestamp) " +
+            f"VALUES ({self.id}, {self.rawdata}, {self.timestamp});"
+        )
