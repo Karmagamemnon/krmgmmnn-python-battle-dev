@@ -41,8 +41,6 @@ class Sample:
                 tagInformations = self.rawdata[start:end]
 
                 data = Data(tagInformations)
-                print("Sensor ID = ", data.idSensor)
-
                 dataset.append(data)
 
         return dataset
