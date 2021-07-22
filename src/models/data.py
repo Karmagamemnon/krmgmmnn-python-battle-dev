@@ -6,9 +6,10 @@ from utils.tools import getBitFromByte
 
 class Data:
 
-    def __init__(self, tagInformations = None , timestamp: datetime = None, temperature: float = None, humidity: int = None,
+    def __init__(self, tagInformations=None, timestamp: datetime = None, temperature: float = None,
+                 humidity: int = None,
                  rssi: int = None, battery_voltage_status: int = None, id_sensor: int = None):
-        if(tagInformations != None and timestamp != None):
+        if (tagInformations != None and timestamp != None):
             idSensorStart = 0
             idSensorLength = 8
             idSensorEnd = idSensorStart + idSensorLength
@@ -33,7 +34,8 @@ class Data:
             rssiLength = 2
             rssiEnd = rssiStart + rssiLength
 
-            if(len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
+            if (
+                    len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
 
                 # Sensor ID
                 self.idSensor = tagInformations[idSensorStart:idSensorEnd]
@@ -73,7 +75,8 @@ class Data:
                 bytes = tagInformations[rssiStart:rssiEnd]
                 self.rssi = int(bytes, 16)
                 print(f"RSSI = -{str(self.rssi)}dBm")
-        elif(timestamp != None and temperature != None and rssi != None and battery_voltage_status != None and id_sensor != None):
+        elif (
+                timestamp != None and temperature != None and rssi != None and battery_voltage_status != None and id_sensor != None):
             self.temperature = temperature
             self.humidity = humidity
             self.rssi = rssi
@@ -89,16 +92,16 @@ class Data:
     def getInsertQuery(self) -> str:
         humidity = "NULL" if self.humidity == None else self.humidity
         return (
-            "INSERT INTO data (id_sensor, timestamp, battery_voltage_status, temperature, humidity, rssi) " +
-            f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
+                "INSERT INTO data (id_sensor, timestamp, battery_voltage_status, temperature, humidity, rssi) " +
+                f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
         )
 
     def serialize(self):
         return {
-            "temperature" : float(self.temperature),
-            "humidity" : self.humidity,
-            "rssi" : self.rssi,
-            "battery_voltage_status" : self.battery_voltage_status,
-            "timestamp" : self.timestamp,
-            "id_sensor" : self.id_sensor,
+            "temperature": float(self.temperature),
+            "humidity": self.humidity,
+            "rssi": self.rssi,
+            "battery_voltage_status": self.battery_voltage_status,
+            "timestamp": self.timestamp,
+            "id_sensor": self.id_sensor,
         }
