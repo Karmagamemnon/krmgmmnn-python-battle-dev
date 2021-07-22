@@ -29,28 +29,6 @@ CREATE DATABASE IF NOT EXISTS `pythonbattledev_db`
 ;
 USE pythonbattledev_db;
 --
--- Table structure for table `data`
---
-DROP TABLE IF EXISTS `data`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */
-;
-/*!50503 SET character_set_client = utf8mb4 */
-;
-CREATE TABLE `data` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `temperature` decimal(3, 1) DEFAULT NULL,
-  `humidity` int unsigned DEFAULT NULL,
-  `rssi` int unsigned DEFAULT NULL,
-  `battery_voltage_status` tinyint NOT NULL,
-  `timestamp` datetime NOT NULL,
-  `id_sensor` int(8) ZEROFILL NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_data_sensor_idx` (`id_sensor`),
-  CONSTRAINT `fk_data_sensor` FOREIGN KEY (`id_sensor`) REFERENCES `sensor` (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = DEFAULT;
-/*!40101 SET character_set_client = @saved_cs_client */
-;
---
 -- Table structure for table `sample`
 --
 DROP TABLE IF EXISTS `sample`;
@@ -113,6 +91,28 @@ CREATE TABLE `samples_made_from_sensors` (
   KEY `fk_id_sensor_idx` (`id_sensor`),
   CONSTRAINT `fk_id_sample` FOREIGN KEY (`id_sample`) REFERENCES `sample` (`id`),
   CONSTRAINT `fk_id_sensor` FOREIGN KEY (`id_sensor`) REFERENCES `sensor` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = DEFAULT;
+/*!40101 SET character_set_client = @saved_cs_client */
+;
+--
+-- Table structure for table `data`
+--
+DROP TABLE IF EXISTS `data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */
+;
+/*!50503 SET character_set_client = utf8mb4 */
+;
+CREATE TABLE `data` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `temperature` decimal(3, 1) DEFAULT NULL,
+  `humidity` int unsigned DEFAULT NULL,
+  `rssi` int unsigned DEFAULT NULL,
+  `battery_voltage_status` tinyint NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `id_sensor` int(8) ZEROFILL NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_data_sensor_idx` (`id_sensor`),
+  CONSTRAINT `fk_data_sensor` FOREIGN KEY (`id_sensor`) REFERENCES `sensor` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = DEFAULT;
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
