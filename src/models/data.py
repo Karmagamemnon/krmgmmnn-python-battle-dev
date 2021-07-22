@@ -1,10 +1,11 @@
+from datetime import datetime
 from utils.db import count
 from utils.tools import getBitFromByte
 
 
 class Data:
 
-    def __init__(self, tagInformations):
+    def __init__(self, tagInformations, timestamp: datetime):
 
         idSensorStart = 0
         idSensorLength = 8
@@ -35,6 +36,10 @@ class Data:
             # Sensor ID
             self.idSensor = tagInformations[idSensorStart:idSensorEnd]
             print(f"Sensor ID = {str(self.idSensor)}")
+
+            # Timestamp
+            self.timestamp = timestamp
+            print(f"Timestamp = {self.timestamp}")
 
             # Battery status
             bytes = tagInformations[statusStart:statusEnd]
@@ -73,7 +78,8 @@ class Data:
         return exists
 
     def getInsertQuery(self) -> str:
+        humidity = "NULL" if self.humidity == None else self.humidity
         return (
-            "INSERT INTO data (id_sensor, battery_voltage_status, temperature, humidity, rssi) " +
-            f"VALUES ({self.idSensor}, {self.batteryVoltageStatus}, {self.temperature}, {self.humidity}, {self.rssi});"
+            "INSERT INTO data (id_sensor, timestamp, battery_voltage_status, temperature, humidity, rssi) " +
+            f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
         )

@@ -40,7 +40,7 @@ class Sample:
                 end = start + tagLength
                 tagInformations = self.rawdata[start:end]
 
-                data = Data(tagInformations)
+                data = Data(tagInformations, self.timestamp)
                 dataset.append(data)
 
         return dataset

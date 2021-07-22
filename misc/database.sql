@@ -42,7 +42,8 @@ CREATE TABLE `data` (
   `humidity` int unsigned DEFAULT NULL,
   `rssi` int unsigned DEFAULT NULL,
   `battery_voltage_status` tinyint NOT NULL,
-  `id_sensor` int DEFAULT NULL,
+  `timestamp` datetime NOT NULL,
+  `id_sensor` int(8) ZEROFILL NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_data_sensor_idx` (`id_sensor`),
   CONSTRAINT `fk_data_sensor` FOREIGN KEY (`id_sensor`) REFERENCES `sensor` (`id`)
@@ -59,7 +60,7 @@ DROP TABLE IF EXISTS `sample`;
 ;
 CREATE TABLE `sample` (
   `id` int NOT NULL,
-  `rawdata` varchar(45) NOT NULL,
+  `rawdata` varchar(1024) NOT NULL,
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = DEFAULT;
@@ -74,7 +75,7 @@ DROP TABLE IF EXISTS `sensor`;
 /*!50503 SET character_set_client = utf8mb4 */
 ;
 CREATE TABLE `sensor` (
-  `id` int NOT NULL,
+  `id` int(8) ZEROFILL NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = DEFAULT;
@@ -107,7 +108,7 @@ DROP TABLE IF EXISTS `samples_made_from_sensors`;
 ;
 CREATE TABLE `samples_made_from_sensors` (
   `id_sample` int NOT NULL,
-  `id_sensor` int NOT NULL,
+  `id_sensor` int(8) ZEROFILL NOT NULL,
   PRIMARY KEY (`id_sample`, `id_sensor`),
   KEY `fk_id_sensor_idx` (`id_sensor`),
   CONSTRAINT `fk_id_sample` FOREIGN KEY (`id_sample`) REFERENCES `sample` (`id`),

@@ -21,23 +21,27 @@ class TestMainMethods(unittest.TestCase):
         json = response.json()
         samples = jsonToSamples(json)
 
+        queries: list[str] = []
+
         for sample in samples:
             if(not sample.doesSampleExist()):
-                query = sample.getInsertQuery() + "\n"
+                queries.append(sample.getInsertQuery())
 
                 dataset = sample.getDataset()
                 for data in dataset:
                     sensor = Sensor(data.idSensor)
                     if(not sensor.doesSensorExist()):
-                        query = query + sensor.getInsertQuery() + "\n"
+                        queries.append(sensor.getInsertQuery())
                     else:
                         print(f"Sensor {sensor.id} already exists in database")
-                    query = query + data.getInsertQuery() + "\n"
 
-                print(query)
-                execute(query)
+                    queries.append(data.getInsertQuery())
+
             else:
                 print(f"Sample {sample.id} already exists in database")
+
+        print(queries)
+        execute(queries)
 
 
 if __name__ == '__main__':

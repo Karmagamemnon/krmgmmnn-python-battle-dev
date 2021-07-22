@@ -4,15 +4,15 @@ conn = None
 cursor = None
 
 
-def execute(query):
+def execute(queries: list[str]):
     cursor = conn.cursor()
     try:
-        affected_count = cursor.execute(query, multi=True)
+        for query in queries:
+            cursor.execute(query)
         conn.commit()
-        print(affected_count)
-        print("inserted values")
+        print("Transaction ok")
     except Exception:
-        print("failed to insert values")
+        print("Transaction not ok")
     finally:
         cursor.close()
 
@@ -31,3 +31,4 @@ def closeConnection():
 
 conn = mysql.connector.connect(
     host="localhost", user="python", password="python123", database="pythonbattledev_db")
+conn.autocommit = False
