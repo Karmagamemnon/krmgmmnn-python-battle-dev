@@ -16,6 +16,16 @@ def execute(queries: list[str]):
     finally:
         cursor.close()
 
+def executeSelectQuery(query : str):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query)
+        print("Transaction ok")
+        return cursor.fetchall();
+    except Exception:
+        print("Transaction not ok")
+    finally:
+        cursor.close()
 
 def count(query):
     cursor = conn.cursor()
