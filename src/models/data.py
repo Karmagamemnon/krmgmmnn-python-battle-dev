@@ -5,7 +5,7 @@ from utils.tools import getBitFromByte
 
 class Data:
 
-    def __init__(self, tagInformations, timestamp: datetime):
+    def __init__(self, tagInformations=None, timestamp: datetime = None):
 
         idSensorStart = 0
         idSensorLength = 8
@@ -31,46 +31,49 @@ class Data:
         rssiLength = 2
         rssiEnd = rssiStart + rssiLength
 
-        if(len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
+        if(tagInformations != None):
 
-            # Sensor ID
-            self.idSensor = tagInformations[idSensorStart:idSensorEnd]
-            print(f"Sensor ID = {str(self.idSensor)}")
+            if(len(tagInformations) == idSensorLength + statusLength + batteryVoltageLength + temperatureLength + humidityLength + rssiLength):
 
-            # Timestamp
-            self.timestamp = timestamp
-            print(f"Timestamp = {self.timestamp}")
+                # Sensor ID
+                self.idSensor = tagInformations[idSensorStart:idSensorEnd]
+                print(f"Sensor ID = {str(self.idSensor)}")
 
-            # Battery status
-            bytes = tagInformations[statusStart:statusEnd]
-            bit = getBitFromByte(bytes, 7)
-            self.batteryVoltageStatus = bit
-            print(f"Battery status = {str(self.batteryVoltageStatus)}")
+                # Timestamp
+                self.timestamp = timestamp
+                print(f"Timestamp = {self.timestamp}")
 
-            # Battery voltage
-            bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
-            self.batteryVoltage = int(bytes, 16)
-            print(f"Battery voltage = {str(self.batteryVoltage)}mV")
+                # Battery status
+                bytes = tagInformations[statusStart:statusEnd]
+                bit = getBitFromByte(bytes, 7)
+                self.batteryVoltageStatus = bit
+                print(f"Battery status = {str(self.batteryVoltageStatus)}")
 
-            # Temperature
-            bytes = tagInformations[temperatureStart:temperatureEnd]
-            isAbnormal = getBitFromByte(bytes, 15) == 1
-            isNegative = getBitFromByte(bytes, 14) == 1
-            temperature = int(bytes, 16) & 0b1111111111111
-            self.temperature = (-1 if isNegative else 1) * (temperature / 10)
-            print(f"Temperature = {str(self.temperature)}°C")
+                # Battery voltage
+                bytes = tagInformations[batteryVoltageStart:batteryVoltageEnd]
+                self.batteryVoltage = int(bytes, 16)
+                print(f"Battery voltage = {str(self.batteryVoltage)}mV")
 
-            # Humidity
-            bytes = tagInformations[humidityStart:humidityEnd]
-            humidity = None if bytes == "FF" else int(bytes, 16)
-            self.humidity = humidity
-            if (self.humidity != None):
-                print(f"Humidity = {str(self.humidity)}%")
+                # Temperature
+                bytes = tagInformations[temperatureStart:temperatureEnd]
+                isAbnormal = getBitFromByte(bytes, 15) == 1
+                isNegative = getBitFromByte(bytes, 14) == 1
+                temperature = int(bytes, 16) & 0b1111111111111
+                self.temperature = (-1 if isNegative else 1) * \
+                    (temperature / 10)
+                print(f"Temperature = {str(self.temperature)}°C")
 
-            # RSSI
-            bytes = tagInformations[rssiStart:rssiEnd]
-            self.rssi = int(bytes, 16)
-            print(f"RSSI = -{str(self.rssi)}dBm")
+                # Humidity
+                bytes = tagInformations[humidityStart:humidityEnd]
+                humidity = None if bytes == "FF" else int(bytes, 16)
+                self.humidity = humidity
+                if (self.humidity != None):
+                    print(f"Humidity = {str(self.humidity)}%")
+
+                # RSSI
+                bytes = tagInformations[rssiStart:rssiEnd]
+                self.rssi = int(bytes, 16)
+                print(f"RSSI = -{str(self.rssi)}dBm")
 
     def doesDataExist(self) -> bool:
         query = f"SELECT COUNT(1) FROM data WHERE id = {self.id}"
