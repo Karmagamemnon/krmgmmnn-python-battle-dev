@@ -2,48 +2,43 @@
 # Group composed of :
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
-from utils.db import execute
-import threading
+import atexit
+import src.db
 import time
 import requests
-from models.sensor import Sensor
-from models.sample import Sample
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+from src.models.sample import Sample
 
+app = Flask(__name__)
 
-def jsonToSamples(jsonResponse: str) -> list[Sample]:
-    samples: list[Sample] = []
-    for sampleData in jsonResponse:
-        newSample = Sample(sampleData)
-        samples.append(newSample)
+def getlastsamples():
+    while True:
+        response = requests.get(
+            "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
+        samples = jsonToSamples(response.json())
+        for sample in samples:
+            src.db.saveSample(sample)
+            sample.decryptRawdata()
+        time.sleep(300)
+
+def jsonToSamples(jsonResponse):
+    samples = []
+    for indexSample, sampleData in enumerate(jsonResponse):
+        sampleObject = Sample(sampleData)
+        samples.append(sampleObject)
     return samples
 
 
-def getLastSamples():
-    response = requests.get(
-        "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
-    json = response.json()
-    samples = jsonToSamples(json)
-
-    for sample in samples:
-        if(not sample.doesSampleExist()):
-            query = query + sample.getInsertQuery() + "\n"
-
-            dataset = sample.getDataset()
-            for data in dataset:
-                sensor = Sensor(data.idSensor)
-                if(not sensor.doesSensorExist()):
-                    query = query + sensor.getInsertQuery() + "\n"
-                else:
-                    print(f"Sensor {sensor.id} already exists in database")
-                query = query + data.getInsertQuery() + "\n"
-
-            execute(query)
-        else:
-            print(f"Sample {sample.id} already exists in database")
-
-    print(query)
-    time.sleep(300)
+@app.route("/")
+def index():
+    return 'Index page'
 
 
-if __name__ == "__main__":
-    threading.Thread(target=getLastSamples()).start()
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=getlastsamples, trigger="interval", seconds=60)
+scheduler.start()
+app.run(port=8081)
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
