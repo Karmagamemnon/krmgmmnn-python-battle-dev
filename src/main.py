@@ -3,12 +3,13 @@
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
 import atexit
-import src.db
+from utils.db import execute
 import time
 import requests
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
-from src.models.sample import Sample
+from models.sensor import Sensor
+from models.sample import Sample
 
 app = Flask(__name__)
 
@@ -16,10 +17,27 @@ def getlastsamples():
     while True:
         response = requests.get(
             "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
-        samples = jsonToSamples(response.json())
+        json = response.json()
+        samples = jsonToSamples(json)
+
         for sample in samples:
-            src.db.saveSample(sample)
-            sample.decryptRawdata()
+            if (not sample.doesSampleExist()):
+                query = query + sample.getInsertQuery() + "\n"
+
+                dataset = sample.getDataset()
+                for data in dataset:
+                    sensor = Sensor(data.idSensor)
+                    if (not sensor.doesSensorExist()):
+                        query = query + sensor.getInsertQuery() + "\n"
+                    else:
+                        print(f"Sensor {sensor.id} already exists in database")
+                    query = query + data.getInsertQuery() + "\n"
+
+                execute(query)
+            else:
+                print(f"Sample {sample.id} already exists in database")
+
+        print(query)
         time.sleep(300)
 
 def jsonToSamples(jsonResponse):
