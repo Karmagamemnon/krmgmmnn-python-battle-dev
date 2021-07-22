@@ -5,8 +5,9 @@ cursor = None
 
 
 def execute(query):
-    cursor.execute(query)
+    cursor.execute(query, multi=True)
     conn.commit()
+    print(f"Transaction ok")
 
 
 def count(query):
