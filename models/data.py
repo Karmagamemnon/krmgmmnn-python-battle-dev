@@ -9,24 +9,24 @@ class Data:
         idSensorLength = 8
         idSensorEnd = idSensorStart + idSensorLength
 
-        statusStart = idSensorEnd + 1
+        statusStart = idSensorEnd
         statusLength = 2
         statusEnd = statusStart + statusLength
 
-        batteryVoltageStart = statusEnd + 1
+        batteryVoltageStart = statusEnd
         batteryVoltageLength = 4
         batteryVoltageEnd = batteryVoltageStart + batteryVoltageLength
 
-        temperatureStart = batteryVoltageEnd + 1
+        temperatureStart = batteryVoltageEnd
         temperatureLength = 4
         temperatureEnd = temperatureStart + temperatureLength
 
-        humidityStart = temperatureEnd + 1
-        humidityLength = 4
+        humidityStart = temperatureEnd
+        humidityLength = 2
         humidityEnd = humidityStart + humidityLength
 
-        rssiStart = humidityEnd + 1
-        rssiLength = 4
+        rssiStart = humidityEnd
+        rssiLength = 2
         rssiEnd = rssiStart + rssiLength
 
         print(tagInformations)
