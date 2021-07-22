@@ -17,7 +17,8 @@ def index_page():
     with doc.body:
         with div(cls="container"):
 
-            h1(title)
+            with div(cls="jumbotron"):
+                h1(title, style="font-family: 'Press Start 2P', cursive;")
 
             with div(cls="d-flex flex-row", style="gap: 1rem;"):
                 for databerk in dataset:
@@ -35,19 +36,34 @@ def index_page():
                             src="https://mon-guide-campingcar.com/wp-content/uploads/2021/01/COMMENT-INSTALLER-UNE-PARABOLE-DE-CAMPING-CAR.png")
 
                         with div(cls="card-body"):
+
                             with h5(f"Sensor #{data.idSensor}", cls="card-title"):
                                 if(data.batteryVoltageStatus == 1):
                                     span("Low battery", cls="badge alert-warning")
+
                             h6(data.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                cls="card-subtitle mb-2 text-muted")
 
-                            div(f"Temperature = {data.temperature}°C",
-                                cls="card-text")
+                            with div():
+                                i(cls="fas fa-thermometer-three-quarters fa-fw")
+                                span(f" {data.temperature}°C")
                             if(data.humidity != None):
-                                div(f"Humidity = {data.humidity}%",
-                                    cls="card-text")
-                            div(f"RSSI = -{data.rssi}dBm", cls="card-text")
+                                with div():
+                                    i(cls="fas fa-tint fa-fw")
+                                    span(f" {data.humidity}%")
+                            with div():
+                                i(cls="fa fa-signal fa-fw")
+                                span(f" -{data.rssi}dBm")
+
+                            # div(f"Temperature = {data.temperature}°C",
+                            #     cls="card-text")
+                            # if(data.humidity != None):
+                            #     div(f"Humidity = {data.humidity}%",
+                            #         cls="card-text")
+                            # div(f"RSSI = -{data.rssi}dBm", cls="card-text")
+
                             hr()
+
                             a("Older data", href="#", cls="btn btn-secondary")
 
     return doc.render()
@@ -58,10 +74,12 @@ def base_page():
     doc = document(title=title)
 
     with doc.head:
-        link(rel='stylesheet',
-             href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css')
-        script(type='text/javascript',
-               src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js')
-        script(type='text/javascript',
-               src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+        link(rel='preconnect', href='https://fonts.googleapis.com')
+        link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=True)
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap', crossorigin=True)
+        script(type='text/javascript', src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
+        script(type='text/javascript', src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+        script(type='text/javascript', src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', crossorigin="anonymous")
+
     return doc
