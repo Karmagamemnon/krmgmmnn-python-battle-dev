@@ -1,16 +1,8 @@
-# Python Battle Dev
-# Group composed of :
-#    - Kevin PEETERS
-#    - Gregory MOU KUI
-import atexit
-from utils.db import execute
 import requests
-from flask import Flask
-from apscheduler.schedulers.background import BackgroundScheduler
+import unittest
+from utils.db import execute
 from models.sensor import Sensor
 from models.sample import Sample
-
-app = Flask(__name__)
 
 
 def jsonToSamples(jsonResponse):
@@ -21,13 +13,9 @@ def jsonToSamples(jsonResponse):
     return samples
 
 
-@app.route("/")
-def index():
-    return 'Index page'
+class TestMainMethods(unittest.TestCase):
 
-
-def getLastSamples():
-    while True:
+    def test_getLastSamples(self):
         response = requests.get(
             "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
         json = response.json()
@@ -52,10 +40,5 @@ def getLastSamples():
                 print(f"Sample {sample.id} already exists in database")
 
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=getLastSamples, trigger="interval", seconds=60)
-scheduler.start()
-app.run(port=8081)
-
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown())
+if __name__ == '__main__':
+    unittest.main()
