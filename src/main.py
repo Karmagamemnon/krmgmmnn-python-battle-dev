@@ -45,6 +45,23 @@ def rename(idSensor: int):
     sensor.setName(name)
     return detailsPage(idSensor)
 
+@app.route("/ville")
+def getTemperatureVille():
+    response = requests.get("https://public.opendatasoft.com/api/records/1.0/search/?dataset=donnees-synop-essentielles-omm&q=bordeaux&sort=date&facet=date&facet=nom&facet=temps_present&facet=libgeo&facet=nom_epci&facet=nom_dept&facet=nom_reg")
+    json = response.json()
+    for jsonRow in json:
+        if("records" in jsonRow):
+            records = json[jsonRow][0]
+            for recordRow in records:
+                if("fields" in recordRow):
+                    for fieldRow in records[recordRow]:
+                        if("libgeo" in fieldRow):
+                            ville = records[recordRow][fieldRow]
+                        if("tc" in fieldRow):
+                            temperature = records[recordRow][fieldRow]
+    return temperatureVille(temperature, ville)
+
+
 
 def getLastSamples():
     response = requests.get("http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
