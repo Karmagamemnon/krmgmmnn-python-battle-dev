@@ -3,13 +3,13 @@ from dominate.tags import *
 from models.sensor import Sensor
 from utils.tools import strftimestamp
 from views.base import getBasePage, getTitle
-
+from repositories.sensor import getSensorById
 
 def detailsPage(idSensor):
 
     doc = getBasePage(delay=300)
     title = getTitle()
-    sensor = Sensor(idSensor)
+    sensor = getSensorById(idSensor)
     dataset = sensor.getLast100Data()
 
     with doc.body:
@@ -20,7 +20,8 @@ def detailsPage(idSensor):
 
             with div(cls="mb-3"):
                 with div(cls="d-flex flex-row justify-content-between"):
-                    h3(f"Sensor #{str(idSensor).zfill(8)}", style="font-family: 'Press Start 2P', cursive;")
+                    h3Title = f"Sensor {sensor.name}" if sensor.name != None else f"Sensor #{str(sensor.id).zfill(8)}"
+                    h3(h3Title, style="font-family: 'Press Start 2P', cursive;")
                     with div(cls="d-flex flex-row"):
                         input_(cls="form-control", type="text", PlaceHolder="ex: capteur du congélateur", max=45)
                         button("CHANGE", type="button", cls="btn btn-secondary")

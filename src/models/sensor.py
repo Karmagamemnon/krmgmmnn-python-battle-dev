@@ -1,3 +1,4 @@
+from __future__ import annotations
 from models.data import Data
 from utils.db import count, executeSelect, executeTransaction
 
@@ -28,11 +29,6 @@ class Sensor:
             dataset.append(data)
         return dataset
 
-    def getSensorNameById(id):
-        query = f"SELECT name FROM sensor WHERE id = {id}"
-        name = executeSelect(query)[0][0]
-        return name
-
-    def updateSensorNameQuery(id: int, name: str):
-        query = f"UPDATE sensor SET name = '{name}' WHERE id = {id}"
+    def setName(self, name: str) -> None:
+        query = f"UPDATE sensor SET name = '{name}' WHERE id = {self.id}"
         executeTransaction([query])

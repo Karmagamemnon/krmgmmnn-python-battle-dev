@@ -6,9 +6,7 @@ from utils.tools import getBitFromByte
 
 class Data:
 
-    def __init__(self, tagInformations=None, timestamp: datetime = None, temperature: float = None,
-                 humidity: int = None,
-                 rssi: int = None, battery_voltage_status: int = None, id_sensor: int = None, name_sensor: str = None):
+    def __init__(self, tagInformations=None, timestamp: datetime = None, temperature: float = None, humidity: int = None, rssi: int = None, battery_voltage_status: int = None, id_sensor: int = None):
         if (tagInformations != None and timestamp != None):
             idSensorStart = 0
             idSensorLength = 8
@@ -83,7 +81,6 @@ class Data:
             self.batteryVoltageStatus = battery_voltage_status
             self.timestamp = timestamp
             self.idSensor = id_sensor
-            self.nameSensor = name_sensor
 
     def doesDataExist(self) -> bool:
         query = f"SELECT COUNT(1) FROM data WHERE id = {self.id}"
@@ -103,8 +100,7 @@ class Data:
         result = executeSelect(query)
         listData = []
         for row in result:
-            sensorName = Sensor.getSensorNameById(row[5])
-            data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5], sensorName)
+            data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
             listData.append(data)
         return listData
 

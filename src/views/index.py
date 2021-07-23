@@ -1,6 +1,7 @@
 from dominate.tags import *
 from models.data import Data
 from utils.tools import strftimestamp
+from repositories.sensor import getSensorById
 from views.base import getBasePage, getTitle
 
 def indexPage():
@@ -24,7 +25,9 @@ def indexPage():
                             src="https://www.revolution-energetique.com/wp-content/uploads/2021/05/satellite-5a3c2679b39d030037a12868-768x504.jpg")
 
                         with div(cls="card-body"):
-                            h5Title = f"Sensor {data.nameSensor}" if data.nameSensor != None else f"Sensor #{str(data.idSensor).zfill(8)}"
+
+                            sensor = getSensorById(data.idSensor)
+                            h5Title = f"Sensor {sensor.name}" if sensor.name != None else f"Sensor #{str(sensor.id).zfill(8)}"
                             with h5(h5Title, cls="card-title"):
                                 if(data.batteryVoltageStatus == 1):
                                     span("Low battery", cls="badge alert-warning")
