@@ -1,7 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
 from utils.db import count, executeSelect
-from models.sensor import Sensor
 from utils.tools import getBitFromByte
 
 
@@ -99,6 +98,7 @@ class Data:
         )
 
     def getMostRecentDataForEachSensor() -> list[Data]:
+        from models.sensor import Sensor
         query = "SELECT `data1`.`timestamp`, `data1`.`temperature`, `data1`.`humidity`, `data1`.`rssi`, `data1`.`battery_voltage_status`, `data1`.`id_sensor` FROM `data` as data1 JOIN (SELECT * FROM `data` as data2 GROUP BY `data2`.`timestamp` ORDER BY `data2`.`timestamp` DESC) as data3 ON `data3`.`id` = `data1`.`id` GROUP BY `data1`.`id_sensor`"
         result = executeSelect(query)
         listData = []
