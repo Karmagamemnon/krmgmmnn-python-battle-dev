@@ -2,20 +2,19 @@
 # Group composed of :
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
-import atexit
-from utils.db import executeTransaction, executeSelect
-import requests
-from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask
 from flask import Flask, request
 from models.sample import Sample
 from models.sensor import Sensor
 from utils.db import executeTransaction
+from utils.db import executeTransaction
 from views.details import detailsPage
 from views.index import indexPage
 import atexit
+import atexit
 import requests
-from views.ville import temperatureVille
+import requests
 
 app = Flask(__name__)
 
@@ -45,26 +44,10 @@ def rename(idSensor: int):
     sensor.setName(name)
     return detailsPage(idSensor)
 
-@app.route("/ville")
-def getTemperatureVille():
-    response = requests.get("https://public.opendatasoft.com/api/records/1.0/search/?dataset=donnees-synop-essentielles-omm&q=bordeaux&sort=date&facet=date&facet=nom&facet=temps_present&facet=libgeo&facet=nom_epci&facet=nom_dept&facet=nom_reg")
-    json = response.json()
-    for jsonRow in json:
-        if("records" in jsonRow):
-            records = json[jsonRow][0]
-            for recordRow in records:
-                if("fields" in recordRow):
-                    for fieldRow in records[recordRow]:
-                        if("libgeo" in fieldRow):
-                            ville = records[recordRow][fieldRow]
-                        if("tc" in fieldRow):
-                            temperature = records[recordRow][fieldRow]
-    return temperatureVille(temperature, ville)
-
-
 
 def getLastSamples():
-    response = requests.get("http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
+    response = requests.get(
+        "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
     json = response.json()
     samples = jsonToSamples(json)
 

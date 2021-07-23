@@ -27,7 +27,7 @@ def detailsPage(idSensor):
                     with form(action=f"/api/sensor/{sensor.id}", method="POST"):
                         with div(cls="d-flex flex-row"):
                             input_(name="name", cls="form-control", type="text", PlaceHolder="ex: capteur du congélateur", max=45)
-                            button("CHANGE", type="submit", cls="btn btn-secondary")
+                            button("CHANGE SENSOR NAME", type="submit", cls="btn btn-secondary")
                 a("RETURN TO HOMEPAGE", href="/", style="font-family: 'Press Start 2P', cursive;")
 
             with table(cls="table table-sm table-striped"):

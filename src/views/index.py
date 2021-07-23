@@ -1,5 +1,7 @@
+import json
 from dominate.tags import *
 from models.data import Data
+from repositories.opendatasoft import getTemperature
 from utils.tools import strftimestamp
 from repositories.sensor import getSensorById
 from views.base import getBasePage, getTitle
@@ -12,12 +14,20 @@ def indexPage():
     with doc.body:
         with div(cls="container"):
 
-            with div(cls="jumbotron"):
+            with div(cls="jumbotron mb-0"):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
                 for _ in range(0, 5):
                     i(cls="fas fa-star fa-2x")
 
+            opendata = json.loads(getTemperature("Bordeaux"))
+            ville = opendata["ville"]
+            temperature = opendata["temperature"]
+            with div(cls="d-flex flex-row alert alert-secondary", style="gap: 1rem;"):
+                i(cls="fas fa-cloud-sun fa-2x")
+                h4(f"It's {temperature}°C in {ville}")
+
             with div(cls="d-flex flex-row flex-wrap justify-content-around", style="gap: 1rem;"):
+
                 dataset = Data.getMostRecentDataForEachSensor()
                 for data in dataset:
 
@@ -49,6 +59,6 @@ def indexPage():
 
                             hr()
 
-                            a("Previous data", href=f"/details/{data.idSensor}", cls="btn btn-secondary")
+                            a("More", href=f"/details/{data.idSensor}", cls="btn btn-secondary")
 
     return doc.render()
