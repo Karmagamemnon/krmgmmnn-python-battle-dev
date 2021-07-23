@@ -17,7 +17,7 @@ def indexPage():
                 for _ in range(0, 5):
                     i(cls="fas fa-star fa-2x")
 
-            with div(cls="d-flex flex-row", style="gap: 1rem;"):
+            with div(cls="d-flex flex-row flex-wrap justify-content-around", style="gap: 1rem;"):
                 dataset = Data.getMostRecentDataForEachSensor()
                 for data in dataset:
 
@@ -35,7 +35,7 @@ def indexPage():
                                     span("Low battery", cls="badge alert-warning")
 
                             h6(strftimestamp(data.timestamp),
-                               cls="card-subtitle mb-2 text-muted")
+                            cls="card-subtitle mb-2 text-muted")
 
                             with div():
                                 i(cls="fas fa-thermometer-three-quarters fa-fw")
