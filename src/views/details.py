@@ -1,3 +1,4 @@
+from logging import PlaceHolder
 from dominate.tags import *
 from models.sensor import Sensor
 from utils.tools import strftimestamp
@@ -6,7 +7,7 @@ from views.base import getBasePage, getTitle
 
 def detailsPage(idSensor):
 
-    doc = getBasePage()
+    doc = getBasePage(delay=300)
     title = getTitle()
     sensor = Sensor(idSensor)
     dataset = sensor.getLast100Data()
@@ -18,7 +19,11 @@ def detailsPage(idSensor):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
 
             with div(cls="mb-3"):
-                h3(f"Sensor #{str(idSensor).zfill(8)}", style="font-family: 'Press Start 2P', cursive;")
+                with div(cls="d-flex flex-row justify-content-between"):
+                    h3(f"Sensor #{str(idSensor).zfill(8)}", style="font-family: 'Press Start 2P', cursive;")
+                    with div(cls="d-flex flex-row"):
+                        input_(cls="form-control", type="text", PlaceHolder="ex: capteur du congélateur", max=45)
+                        button("CHANGE", type="button", cls="btn btn-secondary")
                 a("RETURN TO HOMEPAGE", href="/", style="font-family: 'Press Start 2P', cursive;")
 
             with table(cls="table table-sm table-striped"):
@@ -32,6 +37,6 @@ def detailsPage(idSensor):
                             td(strftimestamp(data.timestamp))
                             td(f"{data.temperature}°C")
                             td("No data" if data.humidity == None else f"{data.humidity}%")
-                            td(f"-{data.temperature}dBm")
+                            td(f"-{data.rssi}dBm")
 
     return doc.render()

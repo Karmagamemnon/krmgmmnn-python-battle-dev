@@ -1,11 +1,13 @@
 from dominate.tags import *
 from dominate import document
 
-def getBasePage():
+def getBasePage(delay: int=None):
 
     doc = document(title=getTitle())
 
     with doc.head:
+        if(delay != None):
+            meta(http_equiv="refresh", content=delay)
         link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
         link(rel='preconnect', href='https://fonts.googleapis.com')
         link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=True)
