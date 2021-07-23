@@ -1,11 +1,12 @@
 from models.data import Data
-from utils.db import count, executeSelect
+from utils.db import count, executeSelect, executeTransaction
 
 
 class Sensor:
 
-    def __init__(self, id):
+    def __init__(self, id: int, name: str = None):
         self.id = id
+        self.name = name
 
     def doesSensorExist(self) -> bool:
         query = f"SELECT COUNT(1) FROM sensor WHERE id = {self.id}"
@@ -26,3 +27,12 @@ class Sensor:
             data = Data(None, row[0], row[1], row[2], row[3], row[4], self.id)
             dataset.append(data)
         return dataset
+
+    def getSensorNameById(id):
+        query = f"SELECT name FROM sensor WHERE id = {id}"
+        name = executeSelect(query)[0][0]
+        return name
+
+    def updateSensorNameQuery(id: int, name: str):
+        query = f"UPDATE sensor SET name = '{name}' WHERE id = {id}"
+        executeTransaction([query])
