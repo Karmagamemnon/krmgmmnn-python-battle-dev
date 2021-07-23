@@ -94,21 +94,21 @@ class Data:
             f"VALUES ({self.idSensor}, '{self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}', {self.batteryVoltageStatus}, {self.temperature}, {humidity}, {self.rssi});"
         )
 
-    def getMostRecentDataForEachSensor() -> list[Data]:
-        query = (
-            "SELECT d1.timestamp, d1.temperature, d1.humidity, d1.rssi, d1.battery_voltage_status, d1.id_sensor FROM data d1 " +
-            "INNER JOIN ( " +
-                "SELECT id_sensor, MAX(timestamp) as timestamp FROM data " +
-                "GROUP BY id_sensor " + 
-            ") d2 ON d1.id_sensor = d2.id_sensor AND d1.timestamp = d2.timestamp " +
-            "ORDER BY id_sensor;"
-        )
-        result = executeSelect(query)
-        listData = []
-        for row in result:
-            data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
-            listData.append(data)
-        return listData
+    # def getMostRecentDataForEachSensor() -> list[Data]:
+    #     query = (
+    #         "SELECT d1.timestamp, d1.temperature, d1.humidity, d1.rssi, d1.battery_voltage_status, d1.id_sensor FROM data d1 " +
+    #         "INNER JOIN ( " +
+    #             "SELECT id_sensor, MAX(timestamp) as timestamp FROM data " +
+    #             "GROUP BY id_sensor " + 
+    #         ") d2 ON d1.id_sensor = d2.id_sensor AND d1.timestamp = d2.timestamp " +
+    #         "ORDER BY id_sensor;"
+    #     )
+    #     result = executeSelect(query)
+    #     listData = []
+    #     for row in result:
+    #         data = Data(None, row[0], row[1], row[2], row[3], row[4], row[5])
+    #         listData.append(data)
+    #     return listData
 
     def serialize(self):
         return {

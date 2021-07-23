@@ -10,12 +10,13 @@ def detailsPage(idSensor):
     doc = getBasePage(delay=300)
     title = getTitle()
     sensor = getSensorById(idSensor)
-    dataset = sensor.getLast100Data()
+    dataset = sensor.getData()
 
     with doc.body:
-        with div(cls="container"):
+        attr(style="background-color: darkgrey; min-height: 100%;")
+        with div(cls="container", style="background-color: white; min-height: 100%;"):
 
-            with div(cls="jumbotron"):
+            with div(cls="jumbotron py-3"):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
                 for _ in range(0, 5):
                     i(cls="fas fa-star fa-2x")

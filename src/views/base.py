@@ -4,6 +4,8 @@ from dominate import document
 def getBasePage(delay: int=None):
 
     doc = document(title=getTitle())
+    with doc:
+        html(style="height: 100vh;")
 
     with doc.head:
         if(delay != None):

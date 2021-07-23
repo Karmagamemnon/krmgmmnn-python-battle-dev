@@ -20,7 +20,15 @@ class Sensor:
             f"VALUES ({self.id});"
         )
 
-    def getLast100Data(self) -> list[Data]:
+    def getMostRecentData(self) -> Data:
+        query = f"SELECT timestamp, temperature, humidity, rssi, battery_voltage_status FROM data WHERE id_sensor = {self.id} ORDER BY timestamp DESC LIMIT 1;"
+        result = executeSelect(query)
+        row = result[0]
+        print(row)
+        data = Data(None, row[0], row[1], row[2], row[3], row[4], self.id)
+        return data
+
+    def getData(self) -> list[Data]:
         query = f"SELECT timestamp, temperature, humidity, rssi, battery_voltage_status FROM data WHERE id_sensor = {self.id} ORDER BY timestamp DESC;"
         result = executeSelect(query)
         dataset = []

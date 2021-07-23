@@ -3,8 +3,9 @@ from dominate.tags import *
 from models.data import Data
 from repositories.opendatasoft import getTemperature
 from utils.tools import strftimestamp
-from repositories.sensor import getSensorById
+from repositories.sensor import getAll, getSensorById
 from views.base import getBasePage, getTitle
+
 
 def indexPage():
 
@@ -12,9 +13,10 @@ def indexPage():
     title = getTitle()
 
     with doc.body:
-        with div(cls="container"):
+        attr(style="background-color: darkgrey; min-height: 100vh;")
+        with div(cls="container", style="background-color: white; min-height: 100vh;"):
 
-            with div(cls="jumbotron mb-0"):
+            with div(cls="jumbotron py-3 mb-0"):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
                 for _ in range(0, 5):
                     i(cls="fas fa-star fa-2x")
@@ -28,8 +30,9 @@ def indexPage():
 
             with div(cls="d-flex flex-row flex-wrap justify-content-around", style="gap: 1rem;"):
 
-                dataset = Data.getMostRecentDataForEachSensor()
-                for data in dataset:
+                allSensors = getAll()
+                for sensor in allSensors:
+                    data = sensor.getMostRecentData()
 
                     with div(cls="card"):
 
@@ -45,20 +48,22 @@ def indexPage():
                                     span("Low battery", cls="badge alert-warning")
 
                             h6(strftimestamp(data.timestamp),
-                            cls="card-subtitle mb-2 text-muted")
+                               cls="card-subtitle mb-2 text-muted")
 
                             with div():
                                 i(cls="fas fa-thermometer-three-quarters fa-fw")
                                 span(f" {data.temperature}°C")
                             with div():
                                 i(cls="fas fa-tint fa-fw")
-                                span(f" {data.humidity}%" if data.humidity != None else "No data")
+                                span(
+                                    f" {data.humidity}%" if data.humidity != None else "No data")
                             with div():
                                 i(cls="fa fa-signal fa-fw")
                                 span(f" -{data.rssi}dBm")
 
                             hr()
 
-                            a("More", href=f"/details/{data.idSensor}", cls="btn btn-secondary")
+                            a("More",
+                              href=f"/details/{data.idSensor}", cls="btn btn-secondary")
 
     return doc.render()
