@@ -95,8 +95,14 @@ class Data:
         )
 
     def getMostRecentDataForEachSensor() -> list[Data]:
-        from models.sensor import Sensor
-        query = "select max(timestamp) as timestamp, temperature, humidity, rssi, battery_voltage_status, id_sensor from data group by id_sensor"
+        query = (
+            "SELECT d1.timestamp, d1.temperature, d1.humidity, d1.rssi, d1.battery_voltage_status, d1.id_sensor FROM data d1 " +
+            "INNER JOIN ( " +
+                "SELECT id_sensor, MAX(timestamp) as timestamp FROM data " +
+                "GROUP BY id_sensor " + 
+            ") d2 ON d1.id_sensor = d2.id_sensor AND d1.timestamp = d2.timestamp " +
+            "ORDER BY id_sensor;"
+        )
         result = executeSelect(query)
         listData = []
         for row in result:

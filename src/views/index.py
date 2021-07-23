@@ -14,6 +14,8 @@ def indexPage():
 
             with div(cls="jumbotron"):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
+                for _ in range(0, 5):
+                    i(cls="fas fa-star fa-2x")
 
             with div(cls="d-flex flex-row", style="gap: 1rem;"):
                 dataset = Data.getMostRecentDataForEachSensor()
@@ -27,7 +29,7 @@ def indexPage():
                         with div(cls="card-body"):
 
                             sensor = getSensorById(data.idSensor)
-                            h5Title = f"Sensor {sensor.name}" if sensor.name != None else f"Sensor #{str(sensor.id).zfill(8)}"
+                            h5Title = f"Sensor {sensor.name}" if sensor.name else f"Sensor #{str(sensor.id).zfill(8)}"
                             with h5(h5Title, cls="card-title"):
                                 if(data.batteryVoltageStatus == 1):
                                     span("Low battery", cls="badge alert-warning")
@@ -38,10 +40,9 @@ def indexPage():
                             with div():
                                 i(cls="fas fa-thermometer-three-quarters fa-fw")
                                 span(f" {data.temperature}°C")
-                            if(data.humidity != None):
-                                with div():
-                                    i(cls="fas fa-tint fa-fw")
-                                    span(f" {data.humidity}%")
+                            with div():
+                                i(cls="fas fa-tint fa-fw")
+                                span(f" {data.humidity}%" if data.humidity != None else "No data")
                             with div():
                                 i(cls="fa fa-signal fa-fw")
                                 span(f" -{data.rssi}dBm")

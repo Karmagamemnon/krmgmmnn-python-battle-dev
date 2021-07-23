@@ -17,21 +17,34 @@ def detailsPage(idSensor):
 
             with div(cls="jumbotron"):
                 h1(title, style="font-family: 'Press Start 2P', cursive;")
+                for _ in range(0, 5):
+                    i(cls="fas fa-star fa-2x")
 
             with div(cls="mb-3"):
                 with div(cls="d-flex flex-row justify-content-between"):
-                    h3Title = f"Sensor {sensor.name}" if sensor.name != None else f"Sensor #{str(sensor.id).zfill(8)}"
+                    h3Title = f"Sensor {sensor.name}" if sensor.name else f"Sensor #{str(sensor.id).zfill(8)}"
                     h3(h3Title, style="font-family: 'Press Start 2P', cursive;")
-                    with div(cls="d-flex flex-row"):
-                        input_(cls="form-control", type="text", PlaceHolder="ex: capteur du congélateur", max=45)
-                        button("CHANGE", type="button", cls="btn btn-secondary")
+                    with form(action=f"/api/sensor/{sensor.id}", method="POST"):
+                        with div(cls="d-flex flex-row"):
+                            input_(name="name", cls="form-control", type="text", PlaceHolder="ex: capteur du congélateur", max=45)
+                            button("CHANGE", type="submit", cls="btn btn-secondary")
                 a("RETURN TO HOMEPAGE", href="/", style="font-family: 'Press Start 2P', cursive;")
 
             with table(cls="table table-sm table-striped"):
                 with thead():
                     with tr():
-                        for tag in ["Date", "Temperature", "Humidity", "RSSI"]:
-                            th(tag, scope="col")
+                        with th(scope="col"):
+                            i(cls="fas fa-clock")
+                            span("Date")
+                        with th(scope="col"):
+                            i(cls="fas fa-thermometer-three-quarters")
+                            span("Temperature")
+                        with th(scope="col"):
+                            i(cls="fas fa-tint")
+                            span("Humidity")
+                        with th(scope="col"):
+                            i(cls="fa fa-signal")
+                            span("RSSI")
                 with tbody():
                     for data in dataset:
                         with tr():
