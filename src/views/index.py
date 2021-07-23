@@ -26,10 +26,14 @@ def index_page():
                             src="https://www.revolution-energetique.com/wp-content/uploads/2021/05/satellite-5a3c2679b39d030037a12868-768x504.jpg")
 
                         with div(cls="card-body"):
-
-                            with h5(f"Sensor #{str(data.idSensor).zfill(8)}", cls="card-title"):
-                                if(data.batteryVoltageStatus == 1):
-                                    span("Low battery", cls="badge alert-warning")
+                            if(data.nameSensor != None):
+                                with h5(f"Sensor #{str(data.nameSensor)}", cls="card-title", id=f"{str(data.idSensor).zfill(8)}"):
+                                    if(data.batteryVoltageStatus == 1):
+                                        span("Low battery", cls="badge alert-warning")
+                            elif(data.idSensor != None):
+                                with h5(f"Sensor #{str(data.idSensor).zfill(8)}", cls="card-title", id=f"{str(data.idSensor).zfill(8)}"):
+                                    if(data.batteryVoltageStatus == 1):
+                                        span("Low battery", cls="badge alert-warning")
 
                             h6(data.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                cls="card-subtitle mb-2 text-muted")
