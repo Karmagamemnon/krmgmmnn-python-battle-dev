@@ -1,6 +1,6 @@
 import requests
 import unittest
-from utils.db import execute
+from utils.db import executeTransaction
 from models.sensor import Sensor
 from models.sample import Sample
 
@@ -41,7 +41,7 @@ class TestMainMethods(unittest.TestCase):
                 print(f"Sample {sample.id} already exists in database")
 
         print(queries)
-        execute(queries)
+        executeTransaction(queries)
 
 
 if __name__ == '__main__':

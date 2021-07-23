@@ -4,7 +4,7 @@ conn = None
 cursor = None
 
 
-def execute(queries: list[str]):
+def executeTransaction(queries: list[str]):
     cursor = conn.cursor()
     try:
         for query in queries:
@@ -17,7 +17,7 @@ def execute(queries: list[str]):
         cursor.close()
 
 
-def executeSelectQuery(query: str) -> list:
+def executeSelect(query: str) -> list:
     cursor = conn.cursor()
     try:
         cursor.execute(query)

@@ -3,13 +3,14 @@
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
 import atexit
-from utils.db import execute, executeSelectQuery
+from utils.db import executeTransaction, executeSelect
 import requests
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from models.sensor import Sensor
 from models.sample import Sample
-from views.index import index_page
+from views.details import detailsPage
+from views.index import indexPage
 
 app = Flask(__name__)
 
@@ -24,12 +25,16 @@ def jsonToSamples(jsonResponse):
 
 @app.route("/")
 def index():
-    return index_page()
+    return indexPage()
+
+
+@app.route("/details/<int:idSensor>")
+def details(idSensor: int):
+    return detailsPage(idSensor)
 
 
 def getLastSamples():
-    response = requests.get(
-        "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
+    response = requests.get("http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
     json = response.json()
     samples = jsonToSamples(json)
 
@@ -53,7 +58,7 @@ def getLastSamples():
             print(f"Sample {sample.id} already exists in database")
 
     print(queries)
-    execute(queries)
+    executeTransaction(queries)
 
 
 scheduler = BackgroundScheduler()
