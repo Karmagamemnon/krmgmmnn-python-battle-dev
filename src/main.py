@@ -2,6 +2,10 @@
 # Group composed of :
 #    - Kevin PEETERS
 #    - Gregory MOU KUI
+import atexit
+from utils.db import executeTransaction, executeSelect
+import requests
+from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request
 from models.sample import Sample
@@ -11,6 +15,7 @@ from views.details import detailsPage
 from views.index import indexPage
 import atexit
 import requests
+from views.ville import temperatureVille
 
 app = Flask(__name__)
 
@@ -33,17 +38,8 @@ def details(idSensor: int):
     return detailsPage(idSensor)
 
 
-@app.route("/api/sensor/<int:idSensor>", methods=['POST'])
-def rename(idSensor: int):
-    name = request.form.get("name")
-    sensor = Sensor(idSensor)
-    sensor.setName(name)
-    return detailsPage(idSensor)
-
-
 def getLastSamples():
-    response = requests.get(
-        "http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
+    response = requests.get("http://app.objco.com:8099/?account=BJ776QUVG0&limit=5")
     json = response.json()
     samples = jsonToSamples(json)
 
